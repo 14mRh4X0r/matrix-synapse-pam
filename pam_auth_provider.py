@@ -16,6 +16,7 @@
 import pam
 import pwd
 
+from collections import namedtuple
 from twisted.internet import defer
 
 class PAMAuthProvider:
@@ -57,3 +58,10 @@ class PAMAuthProvider:
             yield self.account_handler.register(localpart=localpart)
 
         defer.returnValue(True)
+
+    @staticmethod
+    def parse_config(config):
+        pam_config = namedtuple('_Config', 'create_users')
+        pam_config.create_users = config.get('create_users', True)
+
+        return pam_config
