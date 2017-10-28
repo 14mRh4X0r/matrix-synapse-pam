@@ -6,7 +6,9 @@ Allows Synapse to use UNIX accounts through PAM.
 Installation
 ------------
 
-For now, install with ``./setup.py install``.
+For Debian, packages are available on the `releases page`_.
+
+For other distributions, install with ``./setup.py install``.
 
 Usage
 -----
@@ -28,4 +30,5 @@ Copyright
 
 This software is copyright 2017 by Willem Mulder and licensed under the EUPL_.
 
+.. _releases page: https://github.com/14mRh4X0r/matrix-synapse-pam/releases
 .. _EUPL: https://joinup.ec.europa.eu/software/page/eupl
