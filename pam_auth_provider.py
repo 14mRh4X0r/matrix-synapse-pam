@@ -15,6 +15,8 @@
 
 import pam
 import pwd
+import subprocess
+import sys
 
 from collections import namedtuple
 from twisted.internet import defer
@@ -23,6 +25,7 @@ class PAMAuthProvider:
     def __init__(self, config, account_handler):
         self.account_handler = account_handler
         self.create_users = config.create_users
+        self.use_expect = config.use_expect
 
     @defer.inlineCallbacks
     def check_password(self, user_id, password):
@@ -44,7 +47,10 @@ class PAMAuthProvider:
             defer.returnValue(False)
 
         # Now check the password
-        if not pam.pam().authenticate(localpart, password, service='matrix-synapse'):
+        if not ((not self.use_expect and pam.pam().authenticate(localpart, password, service='matrix-synapse'))
+                or (self.use_expect and 0==subprocess.call(["expect",
+                     (sys.prefix + "/" + "share/matrix-synapse-pam/expect/expect-su.expect"),
+                     localpart, password]))):
             defer.returnValue(False)
 
         # From here on, the user is authenticated
@@ -63,5 +69,6 @@ class PAMAuthProvider:
     def parse_config(config):
         pam_config = namedtuple('_Config', 'create_users')
         pam_config.create_users = config.get('create_users', True)
+        pam_config.use_expect = config.get('use_expect', True)
 
         return pam_config

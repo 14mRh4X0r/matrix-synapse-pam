@@ -1,0 +1,12 @@
+#!/usr/bin/env expect
+
+lassign $argv user password
+
+spawn "su" "$user" "-s" "/bin/sh" "-c" "true"
+
+expect {
+  "Password:" { send "$password\n" }
+}
+
+lassign [wait] pid spawnid ok code
+exit $code
