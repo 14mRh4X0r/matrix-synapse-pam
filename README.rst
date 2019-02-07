@@ -21,9 +21,14 @@ Example Synapse config:
       - module: "pam_auth_provider.PAMAuthProvider"
         config:
           create_users: true
+          use_expect: false
 
 The ``create_users``-key specifies whether to create Matrix accounts
 for valid system accounts.
+
+The ``use_expect``-key specifies whether to use expect instead of Python
+PAM package (needs ``expect`` and ``su`` programs, avoids the need for
+root access)
 
 Copyright
 ---------

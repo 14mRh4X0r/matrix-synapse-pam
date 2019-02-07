@@ -19,8 +19,12 @@ from setuptools import setup
 
 setup(
         name="matrix-synapse-pam",
-        version="0.1.2",
+        version="0.1.3",
         py_modules=['pam_auth_provider'],
+
+        include_package_data = True,
+        data_files = [("share/matrix-synapse-pam/expect", ["expect-su.expect"])],
+
         install_requires=[
             "Twisted>=8.0.0",
             "python-pam"
