@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-# Copyright 2017 Willem Mulder
+# Copyright 2017, 2021 Willem Mulder
 #
-# Licensed under the EUPL, Version 1.1 or - as soon they will be approved by
+# Licensed under the EUPL, Version 1.2 or - as soon they will be approved by
 # the European Commission - subsequent versions of the EUPL (the "Licence");
 # You may not use this work except in compliance with the Licence.
 # You may obtain a copy of the Licence at:
@@ -19,7 +19,7 @@ from setuptools import setup
 
 setup(
         name="matrix-synapse-pam",
-        version="0.1.2",
+        version="0.1.3",
         py_modules=['pam_auth_provider'],
         install_requires=[
             "Twisted>=8.0.0",
