@@ -23,6 +23,7 @@ class PAMAuthProvider:
     def __init__(self, config, account_handler):
         self.account_handler = account_handler
         self.create_users = config.create_users
+        self.skip_user_check = config.skip_user_check
 
     @defer.inlineCallbacks
     def check_password(self, user_id, password):
@@ -38,10 +39,11 @@ class PAMAuthProvider:
         localpart = user_id.split(":", 1)[0][1:]
 
         # check whether user even exists
-        try:
-            pwd.getpwnam(localpart)
-        except KeyError:
-            defer.returnValue(False)
+        if not self.skip_user_check:
+            try:
+                pwd.getpwnam(localpart)
+            except KeyError:
+                defer.returnValue(False)
 
         # Now check the password
         if not pam.pam().authenticate(localpart, password, service='matrix-synapse'):
@@ -63,5 +65,6 @@ class PAMAuthProvider:
     def parse_config(config):
         pam_config = namedtuple('_Config', 'create_users')
         pam_config.create_users = config.get('create_users', True)
+        pam_config.skip_user_check = config.get('skip_user_check', False)
 
         return pam_config
