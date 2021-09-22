@@ -1,4 +1,4 @@
-# Copyright 2017 Willem Mulder
+# Copyright 2017, 2021 Willem Mulder
 #
 # Licensed under the EUPL, Version 1.1 or - as soon they will be approved by
 # the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -49,12 +49,12 @@ class PAMAuthProvider:
 
         # From here on, the user is authenticated
 
-        # Bail if we don't want to create users in Matrix
-        if not self.create_users:
-            defer.returnValue(False)
-
         # Create the user in Matrix if it doesn't exist yet
         if not (yield self.account_handler.check_user_exists(user_id)):
+            # Bail if we don't want to create users in Matrix
+            if not self.create_users:
+                defer.returnValue(False)
+
             yield self.account_handler.register(localpart=localpart)
 
         defer.returnValue(True)
