@@ -13,13 +13,18 @@
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
 
-import pam
-import pwd
+"""Module containing the PAM auth provider for the Synapse Matrix server."""
 
+import pwd
 from collections import namedtuple
+
+import pam
 from twisted.internet import defer
 
+
 class PAMAuthProvider:
+    """PAM auth provider for the Synapse Matrix server."""
+
     def __init__(self, config, account_handler):
         self.account_handler = account_handler
         self.create_users = config.create_users
@@ -27,12 +32,7 @@ class PAMAuthProvider:
 
     @defer.inlineCallbacks
     def check_password(self, user_id, password):
-        """ Attempt to authenticate a user against PAM
-            and register an account if none exists.
-
-            Returns:
-                True if authentication against PAM was successful
-        """
+        """Check user/password against PAM, optionally creating the user."""
         if not password:
             defer.returnValue(False)
         # user_id is of the form @foo:bar.com
@@ -46,7 +46,8 @@ class PAMAuthProvider:
                 defer.returnValue(False)
 
         # Now check the password
-        if not pam.pam().authenticate(localpart, password, service='matrix-synapse'):
+        if not pam.pam().authenticate(localpart, password,
+                                      service='matrix-synapse'):
             defer.returnValue(False)
 
         # From here on, the user is authenticated
@@ -63,6 +64,7 @@ class PAMAuthProvider:
 
     @staticmethod
     def parse_config(config):
+        """Parse the configuration for use in __init__."""
         pam_config = namedtuple('_Config', 'create_users')
         pam_config.create_users = config.get('create_users', True)
         pam_config.skip_user_check = config.get('skip_user_check', False)
